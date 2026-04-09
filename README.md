@@ -1,45 +1,44 @@
-# EnglishLift 30
+# Unlitimate Transpo
 
-EnglishLift 30 is a focused English teaching web app designed to help users improve their English in 30 days with one guided 15-minute session per day.
+Unlitimate Transpo is a production-oriented transport management platform for transport business owners and commission agents.
 
-## What It Includes
+This repository is structured as a startup-style monorepo so the product can grow into a full SaaS platform with secure authentication, role-based access, transport operations, finance workflows, reporting, and cloud deployment on AWS or GCP.
 
-- 30-day structured English improvement journey
-- Daily 15-minute guided practice sessions
-- Speaking, listening, vocabulary, grammar, and confidence training
-- Built-in English coach chat for sentence improvement
-- Speech playback for listening practice
-- Browser speech recognition for speaking practice when supported
-- Local progress tracking for each user in the browser
+## Tech Stack
 
-## Files
+- Frontend: Next.js 15, React 19, TypeScript
+- Backend: Fastify, TypeScript, Zod, JWT auth
+- Database: PostgreSQL with Prisma ORM
+- Cache foundation: Redis
+- Monorepo tooling: pnpm workspaces + Turbo
+- Infra baseline: Docker, AWS/GCP deployment guides
+
+## Folder Structure
 
 ```text
 assistant doreamon/
-|-- index.html
-|-- styles.css
-|-- script.js
+|-- apps/
+|-- infra/
+|-- packages/
+|-- .env.example
+|-- .gitignore
+|-- docker-compose.yml
+|-- package.json
+|-- pnpm-workspace.yaml
 |-- README.md
-|-- LICENSE
-`-- .gitignore
+`-- turbo.json
 ```
 
-## How To Use
+## Security Approach
 
-1. Open `index.html` in Chrome or Edge.
-2. Start with Day 1.
-3. Spend about 15 minutes on the four guided steps.
-4. Use the coach chat to improve your sentences.
-5. Use `Listen to Example` for listening practice.
-6. Use `Practice Speaking` for voice-based speaking practice.
-7. Click `Mark Day Complete` after finishing.
+- HTTP security headers and CORS controls
+- JWT access/refresh token strategy
+- Password hashing with Argon2
+- Zod input validation on API routes
+- Role-based authorization hooks
+- Environment-based secrets
 
-## Learning Goal
+## Cloud Direction
 
-The app is designed for daily English improvement through repetition, guided speaking, listening exposure, better sentence building, and confidence practice.
-
-## Notes
-
-- Speech recognition depends on browser support.
-- User progress is saved locally in the current browser.
-- This version is fully front-end and easy to host on GitHub Pages.
+- AWS: ECS/Fargate, RDS PostgreSQL, ElastiCache Redis, S3, CloudFront, WAF
+- GCP: Cloud Run, Cloud SQL PostgreSQL, Memorystore Redis, Cloud Storage, Cloud CDN
