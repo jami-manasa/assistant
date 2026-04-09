@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Assistant Doreamon</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">Laptop Voice Assistant</p>
+          <h1>Assistant Doreamon</h1>
+          <p class="hero-text">
+            A browser assistant that listens, answers, and helps with everyday
+            laptop tasks in a Siri-style experience.
+          </p>
+        </div>
+        <div class="orb-panel" aria-hidden="true">
+          <div class="orb-glow"></div>
+          <div class="orb-core"></div>
+        </div>
+      </header>
+
+      <main class="dashboard">
+        <section class="card controls-card">
+          <div class="controls-top">
+            <div>
+              <p class="section-label">Status</p>
+              <h2 id="assistant-status">Idle and ready</h2>
+            </div>
+            <span class="badge" id="support-badge">Checking voice support</span>
+          </div>
+
+          <div class="button-row">
+            <button id="voice-toggle" class="primary-button" type="button">
+              Enable Voice
+            </button>
+            <button id="stop-speaking" class="secondary-button" type="button">
+              Stop Voice
+            </button>
+          </div>
+
+          <form id="text-command-form" class="text-command-form">
+            <label for="text-command" class="section-label">Type a command</label>
+            <div class="text-command-row">
+              <input
+                id="text-command"
+                name="text-command"
+                type="text"
+                placeholder="Try: search for weather in Chicago"
+                autocomplete="off"
+              />
+              <button type="submit" class="secondary-button">Send</button>
+            </div>
+          </form>
+        </section>
+
+        <section class="card shortcuts-card">
+          <p class="section-label">Quick Actions</p>
+          <div class="shortcut-grid">
+            <button class="chip" data-command="What time is it?">Time</button>
+            <button class="chip" data-command="What is today's date?">Date</button>
+            <button class="chip" data-command="Battery status">Battery</button>
+            <button class="chip" data-command="Open YouTube">YouTube</button>
+            <button class="chip" data-command="Open Google">Google</button>
+            <button class="chip" data-command="Show my notes">Notes</button>
+          </div>
+        </section>
+
+        <section class="card commands-card">
+          <p class="section-label">Sample Commands</p>
+          <ul class="command-list">
+            <li>"Search for AI tools for students"</li>
+            <li>"Open Gmail"</li>
+            <li>"Calculate 120 / 4 + 16"</li>
+            <li>"Save note submit project tomorrow"</li>
+            <li>"Show my notes"</li>
+            <li>"Battery status"</li>
+          </ul>
+        </section>
+
+        <section class="card transcript-card">
+          <div class="transcript-header">
+            <p class="section-label">Conversation</p>
+            <button id="clear-log" class="ghost-button" type="button">Clear</button>
+          </div>
+          <div id="conversation-log" class="conversation-log" aria-live="polite"></div>
+        </section>
+      </main>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
