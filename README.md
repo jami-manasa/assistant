@@ -16,7 +16,7 @@ This repository is structured as a startup-style monorepo so the product can gro
 ## Folder Structure
 
 ```text
-assistant doreamon/
+Unlitimate Transpo/
 |-- apps/
 |-- infra/
 |-- packages/
