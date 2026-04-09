@@ -58,8 +58,17 @@ function answer(text) {
   speak(text);
 }
 
+function answerWithoutSpeech(text) {
+  addEntry("assistant", text);
+  setStatus(text);
+}
+
 function openUrl(url) {
-  window.open(url, "_blank", "noopener,noreferrer");
+  const popup = window.open(url, "_blank", "noopener,noreferrer");
+
+  if (!popup) {
+    window.location.href = url;
+  }
 }
 
 function normalizeCommand(text) {
@@ -432,7 +441,13 @@ function initRecognition() {
   };
 
   recognition.onresult = (event) => {
-    const transcript = event.results[0][0].transcript;
+    const result = event.results[event.resultIndex];
+
+    if (!result || !result[0]) {
+      return;
+    }
+
+    const transcript = result[0].transcript.trim();
 
     if (!assistantEnabled) {
       return;
@@ -443,7 +458,7 @@ function initRecognition() {
     if (inlineWakeCommand !== null) {
       if (!inlineWakeCommand) {
         awaitingCommand = true;
-        answer("Yes, I am listening.");
+        answerWithoutSpeech("Yes, I am listening.");
         return;
       }
 
