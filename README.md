@@ -1,12 +1,13 @@
 # Assistant Doreamon
 
-Assistant Doreamon is a browser-based laptop assistant inspired by Siri. It listens to voice commands, speaks responses, keeps lightweight notes in local storage, and handles everyday actions like search, time, date, opening popular websites, battery status, and quick calculations.
+Assistant Doreamon is a browser-based laptop assistant inspired by Siri. It listens for wake phrases after microphone permission is granted, speaks responses, keeps lightweight notes in local storage, and handles everyday actions like search, time, date, opening popular websites, battery status, and quick calculations.
 
 ## Features
 
+- Wake phrase support for `Hey Siri`, `Hey Doreamon`, and `Assistant`
 - Voice input with the Web Speech API
 - Spoken responses with speech synthesis
-- Search the web, YouTube, and Google Maps
+- Search the web, YouTube, Google Maps, and open WhatsApp Web
 - Quick commands for time, date, battery, and calculations
 - Local note saving and recall
 - Clean, responsive interface ready for GitHub Pages
@@ -26,16 +27,25 @@ assistant doreamon/
 ## How To Run
 
 1. Open `index.html` in a modern Chromium-based browser such as Chrome or Edge.
-2. Click `Enable Voice`.
+2. Click `Start Assistant` once.
 3. Allow microphone access when the browser asks.
-4. Try commands like:
-   - "What time is it?"
-   - "Search for machine learning tutorials"
-   - "Open YouTube"
+4. Then try commands like:
+   - "Hey Siri open WhatsApp"
+   - "Hey Doreamon open YouTube"
    - "Save note buy milk"
    - "Show my notes"
    - "Calculate 45 divided by 9"
    - "Battery status"
+
+## Important Limitation
+
+This version runs in the browser, so it cannot fully behave like iPhone Siri.
+
+- Browsers require an initial user action and microphone permission before voice listening can start.
+- Browsers cannot reliably act as a system-wide wake-word assistant from a closed tab.
+- Opening installed desktop apps directly usually requires a native desktop app, not a website.
+
+If you want a true laptop Siri experience with always-on wake word detection and real app launching, the next step is to convert this into a native desktop app using Electron or Tauri plus Windows automation.
 
 ## Publish Publicly On GitHub
 

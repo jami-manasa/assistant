@@ -36,17 +36,23 @@
               <p class="section-label">Status</p>
               <h2 id="assistant-status">Idle and ready</h2>
             </div>
-            <span class="badge" id="support-badge">Checking voice support</span>
+            <span class="badge" id="support-badge">Checking wake mode</span>
           </div>
 
           <div class="button-row">
             <button id="voice-toggle" class="primary-button" type="button">
-              Enable Voice
+              Start Assistant
             </button>
             <button id="stop-speaking" class="secondary-button" type="button">
-              Stop Voice
+              Stop Assistant
             </button>
           </div>
+
+          <p class="helper-text">
+            After the first microphone permission, say <strong>Hey Siri</strong>,
+            <strong>Hey Doreamon</strong>, or <strong>Assistant</strong> and then
+            your command, like "Hey Siri open WhatsApp".
+          </p>
 
           <form id="text-command-form" class="text-command-form">
             <label for="text-command" class="section-label">Type a command</label>
@@ -69,6 +75,7 @@
             <button class="chip" data-command="What time is it?">Time</button>
             <button class="chip" data-command="What is today's date?">Date</button>
             <button class="chip" data-command="Battery status">Battery</button>
+            <button class="chip" data-command="Open WhatsApp">WhatsApp</button>
             <button class="chip" data-command="Open YouTube">YouTube</button>
             <button class="chip" data-command="Open Google">Google</button>
             <button class="chip" data-command="Show my notes">Notes</button>
@@ -78,8 +85,10 @@
         <section class="card commands-card">
           <p class="section-label">Sample Commands</p>
           <ul class="command-list">
+            <li>"Hey Siri open WhatsApp"</li>
+            <li>"Hey Doreamon open Gmail"</li>
             <li>"Search for AI tools for students"</li>
-            <li>"Open Gmail"</li>
+            <li>"Open Spotify"</li>
             <li>"Calculate 120 / 4 + 16"</li>
             <li>"Save note submit project tomorrow"</li>
             <li>"Show my notes"</li>

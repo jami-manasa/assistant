@@ -11,9 +11,13 @@ const shortcutButtons = document.querySelectorAll(".chip");
 const notesKey = "assistant-doreamon-notes";
 const RecognitionClass =
   window.SpeechRecognition || window.webkitSpeechRecognition || null;
+const wakePhrases = ["hey siri", "hey doreamon", "assistant", "hey assistant"];
 
 let recognition = null;
 let isListening = false;
+let assistantEnabled = false;
+let awaitingCommand = false;
+let manualStopRequested = false;
 
 function addEntry(role, text) {
   const entry = document.createElement("article");
@@ -56,6 +60,26 @@ function answer(text) {
 
 function openUrl(url) {
   window.open(url, "_blank", "noopener,noreferrer");
+}
+
+function normalizeCommand(text) {
+  return text.trim().replace(/\s+/g, " ");
+}
+
+function extractWakeCommand(rawText) {
+  const normalized = normalizeCommand(rawText.toLowerCase());
+
+  for (const phrase of wakePhrases) {
+    if (normalized === phrase) {
+      return "";
+    }
+
+    if (normalized.startsWith(`${phrase} `)) {
+      return rawText.slice(phrase.length).trim();
+    }
+  }
+
+  return null;
 }
 
 function getNotes() {
@@ -196,11 +220,17 @@ function handleOpenSite(command) {
   const sites = {
     google: "https://www.google.com/",
     youtube: "https://www.youtube.com/",
+    whatsapp: "https://web.whatsapp.com/",
     gmail: "https://mail.google.com/",
     github: "https://github.com/",
     linkedin: "https://www.linkedin.com/",
     netflix: "https://www.netflix.com/",
     spotify: "https://open.spotify.com/",
+    instagram: "https://www.instagram.com/",
+    facebook: "https://www.facebook.com/",
+    chatgpt: "https://chat.openai.com/",
+    x: "https://x.com/",
+    twitter: "https://x.com/",
   };
 
   const siteName = command.replace(/^open\s+/i, "").trim().toLowerCase();
@@ -314,49 +344,118 @@ async function processCommand(rawCommand) {
   }
 
   answer(
-    "I can help with time, date, notes, battery, websites, YouTube, Google search, and simple calculations. Try one of the sample commands."
+    "I can help with time, date, notes, battery, WhatsApp, websites, YouTube, Google search, and simple calculations. Try saying Hey Siri open WhatsApp."
   );
+}
+
+function restartRecognition() {
+  if (!recognition || !assistantEnabled || manualStopRequested || isListening) {
+    return;
+  }
+
+  try {
+    recognition.start();
+  } catch {
+    setTimeout(restartRecognition, 600);
+  }
+}
+
+function stopAssistantMode() {
+  manualStopRequested = true;
+  assistantEnabled = false;
+  awaitingCommand = false;
+
+  if (recognition && isListening) {
+    recognition.stop();
+  }
+
+  window.speechSynthesis.cancel();
+  setStatus("Assistant stopped");
+  voiceToggleBtn.textContent = "Start Assistant";
 }
 
 function initRecognition() {
   if (!RecognitionClass) {
-    supportBadge.textContent = "Voice input not supported here";
+    supportBadge.textContent = "Wake mode unavailable here";
     setStatus("Voice recognition is unavailable in this browser");
     return;
   }
 
   recognition = new RecognitionClass();
   recognition.lang = "en-US";
-  recognition.continuous = false;
+  recognition.continuous = true;
   recognition.interimResults = false;
 
-  supportBadge.textContent = "Voice ready";
+  supportBadge.textContent = "Wake mode ready";
   supportBadge.classList.add("support-ok");
 
   recognition.onstart = () => {
     isListening = true;
     document.body.classList.add("is-listening");
-    setStatus("Listening...");
-    voiceToggleBtn.textContent = "Listening...";
+    setStatus(awaitingCommand ? "Listening for your command..." : "Listening for wake phrase...");
+    voiceToggleBtn.textContent = "Assistant Running";
   };
 
   recognition.onend = () => {
     isListening = false;
     document.body.classList.remove("is-listening");
-    voiceToggleBtn.textContent = "Enable Voice";
-    if (statusEl.textContent === "Listening...") {
-      setStatus("Idle and ready");
+    if (!assistantEnabled) {
+      voiceToggleBtn.textContent = "Start Assistant";
+      if (
+        statusEl.textContent === "Listening for wake phrase..." ||
+        statusEl.textContent === "Listening for your command..."
+      ) {
+        setStatus("Idle and ready");
+      }
+      return;
     }
+
+    setTimeout(restartRecognition, 350);
   };
 
   recognition.onerror = (event) => {
-    setStatus(`Voice error: ${event.error}`);
-    answer("I could not hear you clearly. Please try again.");
+    isListening = false;
+    document.body.classList.remove("is-listening");
+
+    if (event.error === "not-allowed") {
+      assistantEnabled = false;
+      manualStopRequested = true;
+      voiceToggleBtn.textContent = "Start Assistant";
+      setStatus("Microphone permission is required");
+      addEntry("assistant", "Microphone permission is required before wake-word mode can run.");
+      return;
+    }
+
+    if (event.error !== "aborted" && event.error !== "no-speech") {
+      setStatus(`Voice error: ${event.error}`);
+    }
   };
 
   recognition.onresult = (event) => {
     const transcript = event.results[0][0].transcript;
-    processCommand(transcript);
+
+    if (!assistantEnabled) {
+      return;
+    }
+
+    const inlineWakeCommand = extractWakeCommand(transcript);
+
+    if (inlineWakeCommand !== null) {
+      if (!inlineWakeCommand) {
+        awaitingCommand = true;
+        answer("Yes, I am listening.");
+        return;
+      }
+
+      awaitingCommand = false;
+      processCommand(inlineWakeCommand);
+      return;
+    }
+
+    if (awaitingCommand) {
+      awaitingCommand = false;
+      processCommand(transcript);
+    }
   };
 }
 
@@ -366,17 +465,20 @@ voiceToggleBtn.addEventListener("click", () => {
     return;
   }
 
-  if (isListening) {
-    recognition.stop();
+  if (assistantEnabled) {
+    stopAssistantMode();
     return;
   }
 
-  recognition.start();
+  manualStopRequested = false;
+  assistantEnabled = true;
+  awaitingCommand = false;
+  setStatus("Starting hands-free mode...");
+  restartRecognition();
 });
 
 stopSpeakingBtn.addEventListener("click", () => {
-  window.speechSynthesis.cancel();
-  setStatus("Voice playback stopped");
+  stopAssistantMode();
 });
 
 form.addEventListener("submit", (event) => {
@@ -398,4 +500,6 @@ clearLogBtn.addEventListener("click", () => {
 });
 
 initRecognition();
-answer("Assistant Doreamon is ready. Click enable voice or type a command to begin.");
+answer(
+  "Assistant Doreamon is ready. Start the assistant once, then say Hey Siri or Hey Doreamon with your command."
+);
