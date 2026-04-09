@@ -1,4 +1,4 @@
-# Unlitimate Transpo
+# Ultimate Transpo
 
 Unlitimate Transpo is a production-oriented transport management platform for transport business owners and commission agents.
 
@@ -16,7 +16,7 @@ This repository is structured as a startup-style monorepo so the product can gro
 ## Folder Structure
 
 ```text
-Unlitimate Transpo/
+ Ultimate Transpo/
 |-- apps/
 |-- infra/
 |-- packages/
